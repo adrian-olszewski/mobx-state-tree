@@ -155,7 +155,8 @@ export function resolveNodeByPath(
 export function resolveNodeByPathParts(
     base: AnyObjectNode,
     pathParts: string[],
-    failIfResolveFails: boolean = true
+    failIfResolveFails: boolean = true,
+    resolveAsObjectNode: boolean = false
 ): AnyNode | undefined {
     let current: AnyNode | null = base
 
@@ -187,6 +188,9 @@ export function resolveNodeByPathParts(
                 const subType = current.getChildType(part)
                 if (subType) {
                     current = current.getChildNode(part)
+                    if (subType.name.includes("reference") && resolveAsObjectNode) {
+                        current = current.parent
+                    }
                     if (current) continue
                 }
             }
